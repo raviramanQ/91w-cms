@@ -112,6 +112,7 @@ export default function UsersManager() {
   }
 
   const resetForm = () => {
+    // console.log('resetting form')
     setFormData({
       first_name: '',
       last_name: '',
@@ -279,11 +280,11 @@ export default function UsersManager() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  User
+                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Contact
+                  User
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Role
@@ -301,21 +302,15 @@ export default function UsersManager() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {currentItems.map((user) => (
+              
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-semibold">
-                        {user.first_name?.[0]}{user.last_name?.[0]}
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500">@{user.username}</div>
-                      </div>
-                    </div>
+                   
+                  <div className="text-sm text-gray-900">{user.id}</div>
+                    
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{user.email}</div>
-                    <div className="text-sm text-gray-500">{user.mobile_phone_number || 'N/A'}</div>
+                    <div className="text-sm text-gray-900">{user.first_name} {user.last_name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 capitalize">
@@ -460,21 +455,7 @@ export default function UsersManager() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Username *
-                  </label>
-                  <Input
-                    type="text"
-                    value={formData.username}
-                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Password {editingUser ? '(leave blank to keep current)' : '*'}
                   </label>
@@ -483,17 +464,6 @@ export default function UsersManager() {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required={!editingUser}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Mobile Phone
-                  </label>
-                  <Input
-                    type="text"
-                    value={formData.mobile_phone_number}
-                    onChange={(e) => setFormData({ ...formData, mobile_phone_number: e.target.value })}
                   />
                 </div>
               </div>
