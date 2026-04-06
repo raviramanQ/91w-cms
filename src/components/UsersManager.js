@@ -27,10 +27,8 @@ export default function UsersManager() {
     first_name: '',
     last_name: '',
     email: '',
-    username: '',
     password: '',
     role_id: '',
-    mobile_phone_number: '',
     status: 1
   })
 
@@ -117,10 +115,8 @@ export default function UsersManager() {
       first_name: '',
       last_name: '',
       email: '',
-      username: '',
       password: '',
       role_id: '',
-      mobile_phone_number: '',
       status: 1
     })
   }
@@ -137,7 +133,7 @@ export default function UsersManager() {
       alert('You do not have permission to edit users')
       return
     }
-
+console.log('------->>>',formData);
     try {
       let result
       if (editingUser) {
@@ -172,11 +168,9 @@ export default function UsersManager() {
       first_name: user.first_name || '',
       last_name: user.last_name || '',
       email: user.email || '',
-      username: user.username || '',
       password: '', // Don't populate password
       role_id: user.role_id || '',
-      mobile_phone_number: user.mobile_phone_number || '',
-      status: user.status || 1
+     status: user.status || 1
     })
     setShowForm(true)
   }
@@ -476,7 +470,7 @@ export default function UsersManager() {
                   <select
                     value={formData.role_id}
                     onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   >
                     <option value="">Select Role</option>
@@ -493,7 +487,7 @@ export default function UsersManager() {
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: parseInt(e.target.value) })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     required
                   >
                     <option value={1}>Active</option>
