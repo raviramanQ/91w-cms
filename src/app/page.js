@@ -2,21 +2,21 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function HomePage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const { user, loading } = useAuth()
 
   useEffect(() => {
-    if (status === 'loading') return
+    if (loading) return
 
-    if (status === 'authenticated') {
+    if (user) {
       router.push('/home')
     } else {
       router.push('/login')
     }
-  }, [status, router])
+  }, [user, loading, router])
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
