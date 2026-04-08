@@ -1,37 +1,45 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Lock, Mail, ArrowRight } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
+import { Chrome } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { login, user } = useAuth();
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
+    setMounted(true);
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/home');
+    }
+    
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      if (errorParam === 'AccessDenied') {
+        setError('Access denied. You are not authorized to access this system. Please contact your administrator.');
+      } else {
+        setError('Authentication failed. Please try again.');
+      }
+    }
+  }, [status, router, searchParams]);
+
+  const handleGoogleSignIn = async () => {
     setError('');
     setLoading(true);
-
-    const result = await login(email, password);
-
-    if (result.success) {
-      // Redirect to home page
-      router.push('/home')
-    } else {
-      setError(result.error || 'Login failed');
+    
+    try {
+      await signIn('google', { callbackUrl: '/home' });
+    } catch (err) {
+      setError('Failed to initiate sign in. Please try again.');
       setLoading(false);
     }
   };
@@ -100,21 +108,23 @@ export default function LoginPage() {
           </div>
         </div>
         
-        {/* Particle effects */}
-        <div className="absolute inset-0 opacity-20">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-cyan-400 rounded-full"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: Math.random() * 0.5,
-                animation: `twinkle ${2 + Math.random() * 3}s infinite`
-              }}
-            />
-          ))}
-        </div>
+        {/* Particle effects - client-only to prevent hydration mismatch */}
+        {mounted && (
+          <div className="absolute inset-0 opacity-20">
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-cyan-400 rounded-full"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.5,
+                  animation: `twinkle ${2 + Math.random() * 3}s infinite`
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -151,7 +161,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-6">
             {error && (
               <div className="rounded-xl bg-red-900/50 p-4 border-2 border-red-600 animate-shake backdrop-blur-sm">
                 <div className="flex items-center">
@@ -163,69 +173,18 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Email Input */}
-            <div>
-              <label htmlFor="email" className="block text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-cyan-400" />
-                </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="block w-full pl-10 pr-3 py-3.5 border border-slate-700/50 rounded-lg bg-slate-800/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                />
-              </div>
+            {/* Info Message */}
+            <div className="rounded-xl bg-cyan-900/30 p-4 border border-cyan-500/30 backdrop-blur-sm">
+              <p className="text-sm text-cyan-200 text-center">
+                Sign in with your <span className="font-bold">@unicorntechmedia.com</span> account
+              </p>
             </div>
 
-            {/* Password Input */}
-            <div>
-              <label htmlFor="password" className="block text-xs font-bold text-cyan-400 uppercase tracking-wider mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-cyan-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  required
-                  className="block w-full pl-10 pr-12 py-3.5 border border-slate-700/50 rounded-lg bg-slate-800/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
-                  placeholder="Please fill in this field"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-cyan-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-cyan-400" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Submit Button */}
+            {/* Google Sign In Button */}
             <div>
               <button
-                type="submit"
+                type="button"
+                onClick={handleGoogleSignIn}
                 disabled={loading}
                 className="group relative w-full flex justify-center items-center py-3.5 px-4 text-base font-bold rounded-lg text-white bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] transition-all duration-200 shadow-lg shadow-cyan-500/40 hover:shadow-cyan-400/60 uppercase tracking-wide"
               >
@@ -239,20 +198,20 @@ export default function LoginPage() {
                   </>
                 ) : (
                   <>
-                    <ArrowRight className="w-5 h-5 mr-2" />
-                    SIGN IN
+                    <Chrome className="w-5 h-5 mr-2" />
+                    SIGN IN WITH GOOGLE
                   </>
                 )}
               </button>
             </div>
             
-            {/* Forgot Password */}
+            {/* Security Notice */}
             <div className="text-center">
-              <button type="button" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                Forgot password?
-              </button>
+              <p className="text-gray-400 text-xs">
+                🔒 Secure OAuth authentication
+              </p>
             </div>
-          </form>
+          </div>
         </div>
       </div>
 

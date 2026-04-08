@@ -5,17 +5,30 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 class ApiClient {
   constructor() {
     this.baseURL = API_URL;
+    this.userEmail = null;
+  }
+
+  setUserEmail(email) {
+    this.userEmail = email;
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     console.log('url:----', url);
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+
+    // Add user email for OAuth authentication
+    if (this.userEmail) {
+      headers['x-user-email'] = this.userEmail;
+    }
+
     const config = {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+      headers,
       credentials: 'include', // Important for cookies
     };
 

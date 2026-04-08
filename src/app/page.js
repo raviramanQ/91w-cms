@@ -2,25 +2,22 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { useSession } from 'next-auth/react'
 
 export default function HomePage() {
   const router = useRouter()
-  const { user, loading } = useAuth()
+  const { data: session, status } = useSession()
 
   useEffect(() => {
-    if (!loading) {
-      if (user) {
-        // User is logged in, redirect to home
-        router.push('/home')
-      } else {
-        // User is not logged in, redirect to login
-        router.push('/login')
-      }
-    }
-  }, [user, loading, router])
+    if (status === 'loading') return
 
-  // Show loading state while checking auth
+    if (status === 'authenticated') {
+      router.push('/home')
+    } else {
+      router.push('/login')
+    }
+  }, [status, router])
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="text-center">
