@@ -122,6 +122,8 @@ export default function UsersManager() {
   }
 
   const handleSubmit = async (e) => {
+    console.log('-------form data ---->>>',formData,'---edituser====>>',editingUser);
+
     e.preventDefault()
     
     if (!canCreate && !editingUser) {
@@ -162,7 +164,7 @@ console.log('------->>>',formData);
       alert('You do not have permission to edit users')
       return
     }
-
+console.log('----user=========>>>>>',user);
     setEditingUser(user)
     setFormData({
       first_name: user.first_name || '',
@@ -170,7 +172,7 @@ console.log('------->>>',formData);
       email: user.email || '',
       password: '', // Don't populate password
       role_id: user.role_id || '',
-     status: user.status || 1
+      status: (user.status === 0 || user.status === null) ? 0 : 1
     })
     setShowForm(true)
   }
