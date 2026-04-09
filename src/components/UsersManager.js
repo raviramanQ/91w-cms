@@ -23,6 +23,8 @@ export default function UsersManager() {
   const [itemsPerPage] = useState(10)
   const [totalPages, setTotalPages] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [messageType, setMessageType] = useState('success')
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -149,7 +151,11 @@ console.log('------->>>',formData);
         setShowForm(false)
         setEditingUser(null)
         resetForm()
-        alert(result.message)
+        setMessageType('success')
+        setSuccessMessage(result.message)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 2000)
       } else {
         alert(result.error || 'Operation failed')
       }
@@ -190,7 +196,11 @@ console.log('----user=========>>>>>',user);
       
       if (result.success) {
         await fetchUsers()
-        alert(result.message)
+        setMessageType('delete')
+        setSuccessMessage(result.message)
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 2000)
       } else {
         alert(result.error || 'Failed to deactivate user')
       }
@@ -218,6 +228,20 @@ console.log('----user=========>>>>>',user);
 
   return (
     <div className="space-y-6">
+      {/* Success Message */}
+      {successMessage && (
+        <div className={`fixed top-4 right-4 z-50 ${messageType === 'delete' ? 'bg-red-500' : 'bg-green-500'} text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 animate-slide-in`}>
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {messageType === 'delete' ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            )}
+          </svg>
+          <span className="font-medium">{successMessage}</span>
+        </div>
+      )}
+
       {/* Header */}
         <div className="bg-blue-700 rounded-2xl p-8 mb-6 shadow-xl">
       <div className="flex justify-between items-center">
