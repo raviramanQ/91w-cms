@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: '91W CMS',
   description: 'Content Management System for 91Wheels',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({ children }) {
