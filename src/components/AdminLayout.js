@@ -18,6 +18,7 @@ export default function AdminLayout({ children }) {
     { href: '/users', label: 'Users', icon: User, color: 'blue-700', permission: 'users:read' },
     { href: '/vehicle-types', label: 'Vehicle Types', icon: Car, color: 'blue-700', permission: 'vehicle-types:read' },
     { href: '/vehicle-makes', label: 'Vehicle Makes', icon: Truck, color: 'blue-700', permission: 'vehicle-makes:read' },
+    { href: '/vehicle-models', label: 'Vehicle Models', icon: Car, color: 'blue-700', permission: 'vehicle-models:read' },
     { href: '/settings', label: 'Settings', icon: Settings, color: 'blue-700', permission: 'settings:read' },
   ]
 

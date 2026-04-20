@@ -34,6 +34,17 @@ export default function HomePage() {
       permission: 'vehicle-makes:read'
     },
     {
+      id: 'vehicle-models',
+      name: 'Vehicle Models',
+      description: 'Manage vehicle models and specifications',
+      icon: Car,
+      href: '/vehicle-models',
+      color: 'from-indigo-500 to-blue-500',
+      bgColor: 'bg-indigo-50',
+      iconColor: 'text-indigo-600',
+      permission: 'vehicle-models:read'
+    },
+    {
       id: 'users',
       name: 'Users',
       description: 'Manage system users and permissions',
